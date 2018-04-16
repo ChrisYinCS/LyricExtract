@@ -1,0 +1,52 @@
+# -*- coding: utf-8 -*-
+
+def LyricExtract():
+    """
+    Extract the Chinese and English contents from inside the original file.
+    :return: None
+    """
+    try:
+        f = open('G:\Pythontest\Lyric Extract\Original Lyric Files\Frozen Planet 08.txt', 'r')
+        Output_file = open('G:\Pythontest\Lyric Extract\Original Lyric Files\Frozen Planet 08_Output.txt', 'w')
+
+        Chinese_sentence = ''
+        English_sentence = ''
+        test_count = 0
+
+        for text in f.readlines():
+            find_result = text.find('Dialogue')
+            if (find_result ==0):   # The first word is "Dialogue" then deal with it.
+                End_of_Chinese = text.find('\N')
+                if End_of_Chinese == -1:
+                    pass
+                else:
+                    Start_of_Chinese = 63       # It is a fixed place
+                    Chinese_content = text[Start_of_Chinese:End_of_Chinese]
+
+                    Start_of_English = text.find(r'{\3c&000000&}')
+                    English_content = text[Start_of_English + len(r'{\3c&000000&}'):]
+
+                    Chinese_sentence += Chinese_content
+                    English_sentence += English_content[:-1]
+
+                    EndFlag = English_content[-2]
+
+                    if EndFlag == '.':
+                        print(Chinese_sentence)
+                        print(English_sentence+'\n')
+                        Output_file.write(English_sentence+'\n')
+                        Output_file.write(Chinese_sentence+'\n')
+                        Chinese_sentence = ""
+                        English_sentence = ""
+
+                    else:
+                        English_sentence += ' '     # There should be a spaces in a sentence
+        f.close()
+        Output_file.close()
+
+    except Exception, e:
+        print 'IOError:', e
+        print 'Can not find the file!'
+
+LyricExtract()
+
